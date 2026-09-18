@@ -20,6 +20,7 @@ const sectionValidators = {};
 // 2. CHARGEMENT ASYNCHRONE DES DONNÉES (API GET)
 // ===========================================================================
 async function chargerDonneesEtInitialiser() {
+  console.log("👉 Token extrait de l'URL :", token); // 1. Vérifier si le token est capturé
   if (token) {
     try { 
       const res = await fetch(`${GAS_EXEC_URL}?token=${encodeURIComponent(token)}`);
