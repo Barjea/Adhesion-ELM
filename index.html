@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <base target="_top" />
+  <title>Club Entre Lac et Morgon : Adhésion</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<style>
+	/* Reset et base */
+	* {
+		box-sizing: border-box;
+	}
+
+	/* Form styles (remplace pure-form) */
+	.form {
+		margin: 0;
+	}
+
+	.form input[type="text"],
+	.form input[type="email"],
+	.form input[type="tel"],
+	.form input[type="date"],
+	.form select {
+		display: inline-block;
+		width: 100%;
+		padding: 10px 12px;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		font-size: 14px;
+	}
+
+	.form label {
+		display: block;
+		margin-bottom: 2px;
+		font-weight: 600;
+	}
+
+	/* Buttons (remplace pure-button) */
+	.button {
+		display: inline-block;
+		padding: 10px 20px;
+		font-size: 14px;
+		font-weight: 400;
+		text-align: center;
+		cursor: pointer;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		background-color: #e6e6e6;
+		color: #333;
+		text-decoration: none;
+	}
+
+	.button:hover {
+		background-color: #d9d9d9;
+	}
+
+	.button-primary {
+		background-color: #0078e7;
+		color: #fff;
+		border-color: #0078e7;
+	}
+
+	.button-primary:hover,
+	.button-primary:focus {
+		background-color: #005bb5;
+	}
+
+	/* Grid system (remplace pure-g et pure-u-*) */
+	.grid {
+		display: flex;
+		flex-wrap: wrap;
+		margin: 0 -0.5em;
+	}
+
+	.grid > [class*="col-"] {
+		padding: 0 0.5em;
+	}
+
+	.col-1 {
+		width: 100%;
+	}
+
+	.col-1-3 {
+		width: 33.3333%;
+	}
+
+	/* Controls (remplace pure-controls) */
+	.controls {
+		margin-top: 15px;
+	}
+
+	.control-group {
+		margin-bottom: 15px;
+	}
+
+	/* Checkbox (remplace pure-checkbox) */
+	.checkbox {
+		display: block;
+		margin: 5px 0;
+	}
+
+	.checkbox input[type="checkbox"] {
+		margin-right: 10px;
+	}
+
+	/* Responsive */
+	@media (max-width: 768px) {
+		.col-1-3 {
+			width: 100%;
+		}
+	}
+	body {
+		font-family: sans-serif;
+		background-color: #f4f7f6;
+		margin: 0;
+		padding: 12px;
+	}
+
+	#main-container {
+		max-width: 900px;
+		margin: 0 auto;
+		background-color: #ffffff;
+		padding: 20px;
+		border-radius: 8px;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	}
+
+	#titre-container {
+		display: flex;
+		align-items: center;
+		border-bottom: 2px solid #0078e7;
+		padding-bottom: 10px;
+		margin-bottom: 15px;
+	}
+
+	#logo {
+		font-size: 2.5em;
+		margin-right: 15px;
+		color: #0078e7;
+	}
+
+	#titre {
+		font-size: 1.8em;
+		font-weight: 700;
+		color: #333;
+		margin: 0;
+	}
+
+	.form-row {
+		display: flex;
+		gap: 15px;
+		margin-bottom: 8px;
+	}
+
+	.form-row > div {
+		flex: 1;
+	}
+
+	.form-row.address-row > div:nth-child(1) {
+		flex: 5;
+	}
+
+	.form-row.address-row > div:nth-child(2) {
+		flex: 3;
+	}
+
+	.form-row.address-row > div:nth-child(3) {
+		flex: 2;
+	}
+
+	.form-row.contact-row > div:nth-child(1) {
+		flex: 6;
+	}
+
+	.form-row.contact-row > div:nth-child(2) {
+		flex: 4;
+	}
+
+	#status-message {
+		transition: all 0.3s ease;
+	}
+
+	.header-section {
+		margin-bottom: 15px;
+		padding: 10px 0;
+		border-bottom: 1px solid #ddd;
+	}
+
+	.header-text {
+		font-size: 1.5em;
+		font-weight: bold;
+		color: #0078e7;
+	}
+
+	@media (max-width: 768px) {
+		.form-row {
+			flex-direction: column;
+			gap: 0;
+		}
+	}
+  #logo-club {
+  width: 70px;      /* ajustez la taille ici */
+  height: auto;
+  flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+  <div id="status-message"
+       style="
+         display: none;
+         padding: 10px;
+         border-radius: 4px;
+         margin-bottom: 20px;
+       ">
+  </div>
+
+		<form class="form" id="adhesion-form" novalidate>
+			<div id="main-container">
+				<div id="titre-container">
+	        <img id="logo-club" src="data:image/jpg;base64,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" alt="Logo Generations Mouvement" />
+				<h1>Club Entre Lac et Morgon : Adhésion 2027</h1>
+				</div>
+
+				<div id="section-1-personnelles">
+					<div class="header-section">
+						<div class="header-text">1. Informations Personnelles</div>
+					</div>
+
+					<div class="form-row">
+						<div>
+							<label for="multi-nom">Nom (*)</label>
+							<input
+								id="multi-nom"
+								name="multi-nom"
+								type="text"
+								placeholder="Nom"
+								required
+							/>
+						</div>
+						<div>
+							<label for="multi-prenom">Prénom (*)</label>
+							<input
+								id="multi-prenom"
+								name="multi-prenom"
+								type="text"
+								placeholder="Prénom"
+								required
+							/>
+						</div>
+						<div>
+							<label for="multi-date-n">Date de Naissance (*)</label>
+							<input
+								id="multi-date-n"
+								name="multi-date-n"
+								type="date"
+								required
+							/>
+						</div>
+					</div>
+
+					<div class="form-row address-row">
+						<div>
+							<label for="multi-adresse">Adresse</label>
+							<input
+								id="multi-adresse"
+								name="multi-adresse"
+								type="text"
+								placeholder="Adresse"
+							/>
+						</div>
+						<div>
+							<label for="multi-ville">Ville</label>
+							<input
+								id="multi-ville"
+								name="multi-ville"
+								type="text"
+								placeholder="Ville"
+							/>
+						</div>
+						<div>
+							<label for="multi-code">Code Postal</label>
+							<input
+								id="multi-code"
+								name="multi-code"
+								type="text"
+								placeholder="Code Postal"
+							/>
+						</div>
+					</div>
+
+					<div class="form-row contact-row">
+						<div>
+							<label for="multi-email">Email</label>
+							<input
+								id="multi-email"
+								name="multi-email"
+								type="email"
+								placeholder="Email"
+							/>
+						</div>
+						<div>
+							<label for="multi-phone">Téléphone</label>
+							<input
+								id="multi-phone"
+								name="multi-phone"
+								type="tel"
+								placeholder="Téléphone"
+							/>
+						</div>
+					</div>
+
+					<div class="controls" style="margin-bottom: 20px">
+						<button
+							type="button"
+							class="button button-primary"
+							id="next-button-section-1"
+						>
+							Suivant
+						</button>
+					</div>
+				</div>
+
+				<div id="section-2-activites" style="display: none">
+				<!-- Le contrôleur de validation cible cet englobant -->
+    			<div id="validation-group-activites" data-required-checkboxes="true">
+					<div id="section-2-activites-sport">
+						<div class="header-section">
+							<div class="header-text">2. Activités Sportives</div>
+						</div>
+
+						<p>
+							Veuillez cocher les activités sportives auxquelles vous souhaitez
+							participer :
+						</p>
+
+						<div id="activites-sportives-container" class="grid"></div>
+					</div>
+
+					<div id="section-2-activites-loisirs">
+						<div class="header-section">
+							<div class="header-text">3. Activités de Loisirs</div>
+						</div>
+
+						<p>
+							Veuillez cocher les activités de loisirs auxquelles vous souhaitez
+							participer :
+						</p>
+
+						<div id="activites-loisirs-container" class="grid"></div>
+					</div>
+
+					<div class="controls" style="margin-bottom: 20px">
+						<button
+							type="button"
+							class="button button-primary"
+							id="next-button-activities"
+              disabled
+						>
+							Suivant
+						</button>
+					</div>
+				</div>
+      </div>
+				<!-- ========================================== -->
+				<!-- NOUVELLE SECTION 3 : CHOIX FFRP          -->
+				<!-- ========================================== -->
+				<div id="section-3-ffrp" style="display: none;">
+					<div class="header-section">
+						<div class="header-text">3. Adhésion à la FFRP (Fédération Française de la Randonnée Pédestre)</div>
+					</div>
+
+					<div class="grid" style="margin-bottom: 20px;">
+						<div class="col-1">
+							<p>
+								l'adhésion à la FFRP n'est pas obligatoire.
+							</p>
+							<div style="background-color: #eef6ff; border-left: 4px solid #0078e7; padding: 12px 15px; margin: 15px 0; border-radius: 0 4px 4px 0;">
+								<p style="margin: 0; font-weight: 600; color: #005bb5;">
+								    « En adhérant à la FFRP, vous soutenez le balisage et l'entretien des chemins de randonnée que nous utilisons, ainsi que les baliseurs bénévoles de notre club. »
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="control-group" style="margin-bottom: 25px;">
+						<label style="font-weight: 600; margin-bottom: 12px; display: block; font-size: 1.05em;">
+							Souhaitez-vous adhérer à la FFRP ? (*)
+						</label>
+						
+						<div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px;">
+							<label class="checkbox" style="flex: 1; min-width: 250px; background: #fff; border: 2px solid #ccc; padding: 12px 15px; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">
+								<input type="radio" id="ffrp-oui" name="choix-ffrp" value="Oui" data-required="true" style="margin-right: 8px;">
+								<strong>J'adhère à la FFRP</strong>
+							</label>
+
+							<label class="checkbox" style="flex: 1; min-width: 250px; background: #fff; border: 2px solid #ccc; padding: 12px 15px; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">
+								<input type="radio" id="ffrp-non" name="choix-ffrp" value="Non" data-required="true" style="margin-right: 8px;">
+								<strong>Je n'adhère pas à la FFRP</strong>
+							</label>
+						</div>
+					</div>
+
+					<div class="controls" style="margin-top: 20px;">
+						<button type="button" class="button button-primary" id="next-button-ffrp">Suivant</button>
+					</div>
+				</div>				
+				<!-- ========================================== -->
+				<!-- SECTION 4 : SANTÉ FFRP (Actuelle)          -->
+				<!-- ========================================== -->
+				<div id="section-4-sante-ffrp" style="display: none">
+					<div class="header-section">
+						<div class="header-text">4. Réglementation Santé FFRP (Saison 2026-2027)</div>
+					</div>
+
+					<!-- Choix du statut -->
+					<div class="control-group" style="margin-bottom: 20px;">
+						<label style="font-weight: 600; margin-bottom: 10px; display: block;">Votre situation au club (*)</label>
+						<label for="sante-statut-renouvellement" class="checkbox" style="margin-left: 20px;">
+							<input id="sante-statut-renouvellement" name="multi-sante-statut" type="radio" data-required="true" value="Renouvellement">
+							Renouvellement de licence
+						</label>
+						<label for="sante-statut-nouveau" class="checkbox" style="margin-left: 20px;">
+							<input id="sante-statut-nouveau" name="multi-sante-statut" type="radio" data-required="true" value="Nouveau ou Reprise">
+							Nouvelle adhésion ou Reprise après 2 ans (ou plus) d'interruption
+						</label>
+					</div>
+
+					<!-- Option A : Renouvellement Majeur -->
+					<div id="bloc-sante-renouvellement" style="display: none; background-color: #eef7ff; padding: 15px; border-radius: 5px; border-left: 4px solid #0078e7; margin-bottom: 20px;">
+						<p style="margin-top: 0;"><strong>Conseils de santé FFRP :</strong> Le certificat médical n'est plus exigé pour le renouvellement des majeurs. Vous devez prendre connaissance des conseils de santé préconisés par la FFRP.</p>
+						<label for="multi-sante-attestation-conseils" class="checkbox">
+							<input id="multi-sante-attestation-conseils" name="multi-sante-attestation-conseils" type="checkbox" value="Oui"data-required="true">
+							<strong>J'atteste sur l'honneur (*)</strong> avoir pris connaissance des conseils de santé de la COMED de la FFRandonnée.
+						</label>
+					</div>
+
+					<!-- Option B : Nouveau / Reprise Majeur -->
+					<div id="bloc-sante-caci" style="display: none; background-color: #fff3cd; padding: 15px; border-radius: 5px; border-left: 4px solid #ffc107; margin-bottom: 20px;">
+						<p style="margin-top: 0;"><strong>Certificat Médical (CACI) obligatoire :</strong> Pour une première adhésion ou une reprise après au moins 2 ans d'interruption, vous devez fournir un Certificat d'Absence de Contre-Indication (CACI) de moins de 6 mois.</p>
+						<label for="multi-sante-caci-accord" class="checkbox">
+							<input id="multi-sante-caci-accord" name="multi-sante-caci-accord" type="checkbox" value="Oui" data-required="true">
+							<strong>Je confirme (*)</strong> que je vais fournir un CACI valide de moins de 6 mois pour finaliser mon adhésion.
+						</label>
+					</div>
+
+					<div class="controls" style="margin-bottom: 20px">
+						<button type="button" class="button button-primary" id="next-button-sante-ffrp">
+							Suivant
+						</button>
+					</div>
+				</div>
+
+				<div id="section-5-fede" style="display: none">
+					<div class="header-section">
+						<div class="header-text">
+							5. Adhésion Fédération Française de Randonnées Pédestre (FFRP) et
+							assurances
+						</div>
+					</div>
+
+					<div class="grid" style="margin-bottom: 20px">
+						<div class="col-1">
+							<p>Sélectionnez une option dans le menu déroulant</p>
+						</div>
+					</div>
+
+					<div id="ffrp-dropdown-container"></div>
+
+					<div class="grid" style="margin-bottom: 20px">
+						<div class="col-1">
+							<p style="font-weight: bold" id="ffrp-instruction-message"></p>
+						</div>
+					</div>
+
+					<div class="controls" style="margin-bottom: 20px">
+						<button
+							type="button"
+							class="button button-primary"
+							id="next-button-fede"
+						>
+							Suivant
+						</button>
+					</div>
+				</div>
+				<!-- ========================================== -->
+				<!-- SECTION 4 BIS : SANTÉ CLUB 				 -->
+				<!-- ========================================== -->
+				<div id="section-4-sante-club" style="display: none;">
+					<div class="header-section">
+						<div class="header-text">4. Questionnaire de Santé</div>
+					</div>
+
+					<div class="grid" style="margin-bottom: 20px;">
+						<div class="col-1">
+							<p>
+								Pour les activités sportives, le club a l'obligation légale
+								d'enregistrer votre réponse concernant le questionnaire de santé.
+							</p>
+							<p>
+								<strong>Le questionnaire de santé vous a été envoyé par email.</strong>
+								Veuillez le remplir et en conserver une copie.
+							</p>
+						</div>
+					</div>
+
+					<div class="grid" style="margin-bottom: 20px;">
+						<div class="col-1">
+							<label for="multi-sante-lu" class="checkbox">
+								<input id="multi-sante-lu" name="multi-sante-lu" type="checkbox" value="Oui" data-required="true" />
+								J'ai lu et rempli le questionnaire de santé (*)
+							</label>
+						</div>
+					</div>
+
+					<div class="control-group" style="margin-bottom: 20px;">
+						<label style="font-weight: 600; margin-bottom: 10px; display: block;">Votre situation (*)</label>
+						<label for="multi-sante-non" class="checkbox" style="margin-left: 20px;">
+							<input id="multi-sante-non" name="multi-sante-reponse" type="radio" data-required="true" value="NON à toutes les questions">
+							J'ai répondu NON à toutes les questions
+						</label>
+						<label for="multi-sante-certificat" class="checkbox" style="margin-left: 20px;">
+							<input id="multi-sante-certificat" name="multi-sante-reponse" type="radio" data-required="true" value="Besoin certificat médical">
+							Je fournis un certificat médical
+						</label>
+					</div>
+
+					<div class="controls" style="margin-bottom: 20px;">
+						<button type="button" class="button button-primary" id="next-button-sante-club">
+							Suivant
+						</button>
+					</div>
+				</div>
+				<!-- ========================================== -->
+				<!-- SECTION 6 : SIGNATURE		     			 -->
+				<!-- ========================================== -->
+				<div id="section-6-SES" style="display: none">
+					<div class="header-section">
+						<div class="header-text">
+							6. Signature Électronique et Validation
+						</div>
+					</div>
+
+					<div class="grid" style="margin-bottom: 20px">
+						<div class="col-1">
+							<p style="line-height: 1.6">
+								Je déclare avoir pris connaissance et accepter l'intégralité des
+								<strong>Statuts</strong> et du
+								<strong>Règlement Intérieur</strong> de l'association, et
+								confirme mon adhésion le
+								<strong><span id="date-adhesion"></span></strong> à
+								<strong><span id="heure-adhesion"></span></strong> en cliquant
+								sur le bouton ci-dessous.
+							</p>
+						</div>
+					</div>
+
+					<p id="instruction-cotisation" style="font-weight: bold">
+						Veuillez mettre le
+						<strong>chèque de cotisation de 28 €</strong> dans une enveloppe.
+					</p>
+
+					<p id="instruction-validation">
+						<span style="font-style: italic"
+							>La soumission en ligne ne valide pas les adhésions au club et à la FFRP. Vous devez effectuer votre virement ou remettre votre enveloppe au club pour valider ces inscriptions..</span
+						>
+					</p>
+
+					<div
+						class="controls"
+						style="margin-top: 20px"
+						id="submit-button-container"
+					>
+						<button
+							type="submit"
+							class="button button-primary"
+							id="submit-button"
+						>
+							J'adhère et je paie ma cotisation
+						</button>
+					</div>
+				</div>
+			</div>
+		</form>
+<!-- Inclusion du Script JS en passant explicitement les variables -->
+<?!= include('Formulaire_JS', {
+      nbActiviteS: nbActiviteS,
+      nbActiviteL: nbActiviteL,
+      nomActivitesSportives: nomActivitesSportives,
+      nomActivitesLoisirs: nomActivitesLoisirs,
+      nom: nom,
+      prenom: prenom,
+      nbOptions: nbOptions,
+      optionsFFRP: optionsFFRP,
+      memberData: memberData
+    }); ?>
+</body>
+</html>
