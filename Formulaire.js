@@ -22,8 +22,6 @@ const sectionValidators = {};
 async function chargerDonneesEtInitialiser() {
 
   console.log("👉 Token extrait de l'URL :", token); // 1. Vérifier si le token est capturé
-=======
-  console.log("👉 Token extrait de l'URL :", token);
 
   if (token) {
     try { 
