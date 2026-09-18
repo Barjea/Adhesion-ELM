@@ -1,6 +1,6 @@
 
   // URL de la Web App Apps Script (à remplacer par votre URL réelle de déploiement /exec)
-	const GAS_EXEC_URL = "https://script.google.com/macros/s/AKfycbwpqxf349_cjPkt8iYiCWgwE4-MqPVI49ljtPSp_W_ynG1PuUV9vfHcYnTMNLEcpGTk/exec";
+	const GAS_EXEC_URL = "https://script.google.com/macros/s/AKfycbwlr40GiiJGpckSFgb3ZdbD-D8_i8xw5L40d4l-ziyX9WMfJ1YDHvk1MUREgmoLvYb0/exec";
     // Variables auparavant injectées par Apps Script (<?= ... ?>), maintenant chargées via fetch
 	let nbActiviteS = 0;
 	let nbActiviteL = 0;   
