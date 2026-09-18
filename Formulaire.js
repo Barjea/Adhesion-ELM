@@ -1,36 +1,48 @@
-<script>
-// ================== VARIABLES GLOBALES (PASSÉES PAR doGet) ==================
-	// @ts-ignore
-	const nbActiviteS = Number("<?= nbActiviteS ?>");
-	// @ts-ignore
-	const nbActiviteL = Number("<?= nbActiviteL ?>");
 
-	// Directement injectés car déjà sous forme JSON grâce à doGet
-	// @ts-ignore
-	const nomActivitesSportives = <?!= nomActivitesSportives ?>;
-	// @ts-ignore
-	const nomActivitesLoisirs = <?!= nomActivitesLoisirs ?>;
+  // URL de la Web App Apps Script (à remplacer par votre URL réelle de déploiement /exec)
+	const GAS_EXEC_URL = "https://script.google.com/macros/s/AKfycbyB37qFeIoyOJeFx9Bwgybn-kJJMQj9MhqXu-dOVso7tv5ajMV8ikQ4iaMnInhbCf5G/exec";
+    // Variables auparavant injectées par Apps Script (<?= ... ?>), maintenant chargées via fetch
+	let nbActiviteS = 0;
+	let nbActiviteL = 0;   
+	let nomActivitesSportives = [];
+	let nomActivitesLoisirs = [];
+	let nbOptions = 0;
+	let optionsFFRP = [];
+	let memberData = null; 
+	const urlParams = new URLSearchParams(window.location.search);
+	const token = urlParams.get("token");
+// ===========================================================================
+// 2. CHARGEMENT ASYNCHRONE DES DONNÉES (API GET)
+// ===========================================================================
+	async function chargerDonneesEtInitialiser() {
+   	 if (token) {
+      try { 
+         const res = await fetch(`${GAS_EXEC_URL}?token=${encodeURIComponent(token)}`);
+         const json = await res.json();
+         memberData = json.memberData;
+         nbActiviteS = json.config.nbActiviteS;
+         nbActiviteL = json.config.nbActiviteL;
+         nomActivitesSportives = json.config.nomActivitesSportives;
+         nomActivitesLoisirs = json.config.nomActivitesLoisirs;
+         nbOptions = json.config.nbOptions;
+         optionsFFRP = json.config.optionsFFRP;
+       } 
+      catch (err) {
+          console.error("Erreur de chargement des données :", err);
+        }
+    } 
+   initFormulaire();
 
-	// @ts-ignore
-	const nomParam = "<?= nom ?>";
-	// @ts-ignore
-	const prenomParam = "<?= prenom ?>";
-
-	// Variables FFRP
-	// @ts-ignore
-	const nbOptions = Number("<?= nbOptions ?>");
-	// @ts-ignore
-	const optionsFFRP = <?!= optionsFFRP ?>;
-	// @ts-ignore
-	const memberData = <?!= memberData ?>;
-
-	// ===========================================================================
-
+// ===========================================================================
+// 3. INITIALISATION DU FORMULAIRE ET DES ÉVÉNEMENTS
+// ===========================================================================
 	// Initialisation du formulaire
-	document.addEventListener('DOMContentLoaded', function () {
+	// document.addEventListener('DOMContentLoaded', function () {
+	function initFormulaire() {
 		const form = document.getElementById('adhesion-form');
 		const submitButton = document.getElementById('submit-button');
 		const statusMessage = document.getElementById('status-message');
+		// Pré-remplissage si données membre trouvées
 		const prenomInput = document.getElementById('multi-prenom');
 		const nomInput = document.getElementById('multi-nom');
 		const dateNInput = document.getElementById('multi-date-n');
@@ -74,22 +86,32 @@
 			} else {
 				form.insertBefore(infoMessage, form.firstChild);
 			}
-		} else if (memberData === null && nomParam && prenomParam) {
-			const errorMessage = document.createElement('div');
-			errorMessage.style.cssText = 'background-color: #f8d7da; color: #721c24; padding: 12px; border-radius: 4px; margin-bottom: 20px;';
-			errorMessage.innerHTML = '<strong>⚠️ Membre non trouvé</strong><br>Aucune donnée trouvée pour ce nom et prénom. Veuillez contacter l\'administrateur.';
-
-			const section1b = document.getElementById('section-1-personnelles');
-			if (section1b) {
-				section1b.insertBefore(errorMessage, section1b.firstChild);
-			} else {
-				form.insertBefore(errorMessage, form.firstChild);
-			}
-			submitButton.disabled = true;
 		}
-
 		// Rendu des activités au chargement
 		renderActivityCheckboxes();
+		// Initialisation de la navigation et des validations
+	  	initFormNavigation();
+
+	  // Écouteur pour la soumission
+	  form.addEventListener('submit', function (e) {
+		e.preventDefault();
+		submitButton.disabled = true;
+		statusMessage.style.display = 'none';
+
+		const data = {};
+		new FormData(form).forEach((value, key) => (data[key] = value));
+
+		fetch(GAS_EXEC_URL, {
+		  method: "POST",
+		  headers: { "Content-Type": "text/plain;charset=utf-8" },
+		  body: JSON.stringify(data),
+		  redirect: "follow",
+		})
+		  .then((response) => response.json())
+		  .then(onSuccess)
+		  .catch(onError);
+	  });
+	}
 /**
  * Détermine si un élément est actuellement visible à l'écran
  * (retourne false si l'élément ou l'un de ses parents a display: none)
@@ -176,52 +198,31 @@ function setButtonState(btn, isValid) {
     btn.classList.add('disabled');
   }
 }
-		/**
-		 * Attache la validation automatique entre une section et son bouton 'Suivant'
-		 * @param {string} sectionId - L'ID de la section HTML
-		 * @param {string} buttonId - L'ID du bouton 'Suivant'
-		 */
-const sectionValidators = {};
-		function setupSectionValidation(sectionId, buttonId) {
-			const section = document.getElementById(sectionId);
-			const button = document.getElementById(buttonId);
-
-			if (!section || !button) return;
-
-			const updateState = () => {
-    // ✅ Garde-fou : une section masquée n'est jamais "valide"
-    if (getComputedStyle(section).display === 'none') {
-      setButtonState(button, false);
-      return;
-    }
-				const valid = isSectionValid(section);
-				setButtonState(button, valid);
-			};
-  sectionValidators[sectionId] = updateState; // ✅ NOUVEAU
+/**
+ * Attache la validation automatique entre une section et son bouton 'Suivant'
+ * @param {string} sectionId - L'ID de la section HTML
+ * @param {string} buttonId - L'ID du bouton 'Suivant'
+ */
+	const sectionValidators = {};
+	function setupSectionValidation(sectionId, buttonId) {
+		const section = document.getElementById(sectionId);
+		const button = document.getElementById(buttonId);
+		if (!section || !button) return;
+		const updateState = () => {
+			// ✅ Garde-fou : une section masquée n'est jamais "valide"
+			if (getComputedStyle(section).display === 'none') {
+				setButtonState(button, false);
+				return;
+				}
+			const valid = isSectionValid(section);
+			setButtonState(button, valid);
+		};
+		sectionValidators[sectionId] = updateState; // ✅ NOUVEAU
 			section.addEventListener('input', updateState);
 			section.addEventListener('change', updateState);
-
 			updateState();
 		}
-		// Initialisation de la navigation
-		initFormNavigation();
-
-		// Ajout de la gestion d'événement pour la soumission
-		form.addEventListener('submit', function (e) {
-			e.preventDefault();
-			submitButton.disabled = true;
-			statusMessage.style.display = 'none';
-
-			const data = {};
-			new FormData(form).forEach((value, key) => (data[key] = value));
-
-			google.script.run
-				.withSuccessHandler(onSuccess)
-				.withFailureHandler(onError)
-				.processForm(data);
-		});
-
-		function onSuccess(response) {
+			function onSuccess(response) {
 			if (response.success) {
 				// Remplacer tout le contenu du main-container (ne pas masquer le form car main-container est dedans)
 				const mainContainer = document.getElementById('main-container');
@@ -593,5 +594,9 @@ if (select) {
 				});
 			}
 		}
-	});
-</script>
+	};
+// ===========================================================================
+// 5. POINT D'ENTRÉE (À la toute fin du fichier)
+// ===========================================================================
+	document.addEventListener("DOMContentLoaded", chargerDonneesEtInitialiser);
+
