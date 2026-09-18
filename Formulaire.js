@@ -11,6 +11,7 @@
 	let memberData = null; 
 	const urlParams = new URLSearchParams(window.location.search);
 	const token = urlParams.get("token");
+	const sectionValidators = {};
 // ===========================================================================
 // 2. CHARGEMENT ASYNCHRONE DES DONNÉES (API GET)
 // ===========================================================================
@@ -203,7 +204,6 @@ function setButtonState(btn, isValid) {
  * @param {string} sectionId - L'ID de la section HTML
  * @param {string} buttonId - L'ID du bouton 'Suivant'
  */
-	const sectionValidators = {};
 	function setupSectionValidation(sectionId, buttonId) {
 		const section = document.getElementById(sectionId);
 		const button = document.getElementById(buttonId);
