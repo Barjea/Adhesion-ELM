@@ -21,13 +21,13 @@ const sectionValidators = {};
 // ===========================================================================
 async function chargerDonneesEtInitialiser() {
 
-  console.log("👉 Token extrait de l'URL :", token); // 1. Vérifier si le token est capturé
+  // console.log("👉 Token extrait de l'URL :", token); // 1. Vérifier si le token est capturé
 
   if (token) {
     try { 
       const res = await fetch(`${GAS_EXEC_URL}?token=${encodeURIComponent(token)}`);
       const json = await res.json();
-      console.log("👉 Réponse JSON de Apps Script :", json);
+      // console.log("👉 Réponse JSON de Apps Script :", json);
       memberData = json.memberData;
       nbActiviteS = json.config.nbActiviteS;
       nbActiviteL = json.config.nbActiviteL;
