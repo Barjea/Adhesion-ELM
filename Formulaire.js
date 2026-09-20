@@ -445,10 +445,6 @@ function initFormulaire() {
 
       const data = {};
       new FormData(form).forEach((value, key) => (data[key] = value));
-      // --- TRACES DE DEBUG ---
-      console.log("👉 URL cible :", GAS_EXEC_URL);
-      console.log("👉 Token global dans l'IHM :", token);
-      console.log("👉 Données extraites du formulaire (data) :", data);
 
       fetch(GAS_EXEC_URL, {
         method: "POST",
