@@ -22,6 +22,7 @@ const sectionValidators = {};
 async function chargerDonneesEtInitialiser() {
 
   // console.log("👉 Token extrait de l'URL :", token); // 1. Vérifier si le token est capturé
+  afficherMessageInfo('⌛ Recherche de vos données de l\'année dernière...', 'info', 'section-1-personnelles');
 
   if (token) {
     try { 
@@ -45,6 +46,33 @@ async function chargerDonneesEtInitialiser() {
 // ===========================================================================
 // 3. FONCTIONS UTILITAIRES DE VALIDATION ET RENDU
 // ===========================================================================
+/**
+ * Affiche ou met à jour un message d'information dans un conteneur cible
+ * @param {string} htmlMessage - Le contenu HTML ou texte du message
+ * @param {string} type - 'info' (bleu, défaut) ou 'warning' (jaune)
+ * @param {string} targetContainerId - L'ID de l'élément parent
+ */
+function afficherMessageInfo(htmlMessage, type = 'info', targetContainerId = 'section-1-personnelles') {
+  let infoMessageEl = document.getElementById('info-message-preremplissage');
+
+  if (!infoMessageEl) {
+    infoMessageEl = document.createElement('div');
+    infoMessageEl.id = 'info-message-preremplissage';
+    
+    const container = document.getElementById(targetContainerId) || document.getElementById('adhesion-form');
+    if (container) {
+      container.insertBefore(infoMessageEl, container.firstChild);
+    }
+  }
+
+  if (type === 'warning') {
+    infoMessageEl.style.cssText = 'background-color: #fff3cd; color: #664d03; padding: 12px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #ffc107;';
+  } else {
+    infoMessageEl.style.cssText = 'background-color: #cfe2ff; color: #084298; padding: 12px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #0d6efd;';
+  }
+
+  infoMessageEl.innerHTML = htmlMessage;
+}
 function isElementVisible(el) {
   return !!(el && (el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0));
 }
@@ -391,18 +419,12 @@ function initFormulaire() {
     document.getElementById('multi-code').value = memberData.codePostal || '';
     document.getElementById('multi-email').value = memberData.email || '';
     document.getElementById('multi-phone').value = memberData.telephone || '';
-
-    const infoMessage = document.createElement('div');
-    infoMessage.style.cssText = 'background-color: #cfe2ff; color: #084298; padding: 12px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #0d6efd;';
-    infoMessage.innerHTML = 'Vos données de l\'année dernière sont pré-remplies. Vous pouvez modifier votre adresse, ville, code postal, email et téléphone si nécessaire.';
-
-    const section1 = document.getElementById('section-1-personnelles');
-    if (section1) {
-      section1.insertBefore(infoMessage, section1.firstChild);
-    } else {
-      form.insertBefore(infoMessage, form.firstChild);
+    // Succès
+    afficherMessageInfo('Vos données de l\'année dernière sont pré-remplies. Vous pouvez modifier votre adresse, ville, code postal, email et téléphone si nécessaire.', 'info', 'section-1-personnelles');
+  
+  } else if(token) {
+    afficherMessageInfo('Aucune donnée trouvée pour l\'année dernière.', 'warning', 'section-1-personnelles');
     }
-  }
 
   renderActivityCheckboxes();
   initFormNavigation();
