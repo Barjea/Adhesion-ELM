@@ -2,7 +2,7 @@
 // ===========================================================================
 // 1. CONFIGURATION GLOBAL ET VARIABLES D'ÉTAT
 // ===========================================================================
-const GAS_EXEC_URL = "https://script.google.com/macros/s/AKfycbxLf9Fufe5P1VgA1toXffNrzjl2g2CUS36fjshfgS94EfbnB8sBqKmVD0DPhtm1fcu9/exec";
+const GAS_EXEC_URL = "https://script.google.com/macros/s/AKfycbwfhFSBt5SqftJfI5RGREzOnDBF-E3DgW9nkdMb8mF4x_T98rOKNQkpjmoUxVMBi4yg/exec";
 
 let nbActiviteS = 0;
 let nbActiviteL = 0;   
