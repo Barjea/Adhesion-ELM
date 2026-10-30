@@ -224,12 +224,11 @@ function updateFfrpMessage() {
   const optionIndex = optionsFFRP.indexOf(selectedOption);
   messageContainer.innerHTML = '';
 
-  if (optionIndex >= 0 && optionIndex < (nbOptions - 1)) {
-    messageContainer.innerHTML = 'Règlement par <strong>virement bancaire</strong> ou par <strong>chèque(s)</strong> (Adhésion + FFRP) à remettre sous enveloppe.';
-  } else if (optionIndex >= (nbOptions - 1)) {
-    messageContainer.innerHTML = 'Fournir une <strong>attestation d\'assurance</strong>. Règlement par <strong>virement bancaire</strong> ou par <strong>chèque</strong> sous enveloppe.';
-  }
 
+  if (optionIndex >= 0 && optionIndex < (nbOptions - 1)) {
+	messageContainer.innerHTML = 'Règlement : Veuillez faire **2 virements distincts** (ou **2 chèques séparés**) :<br>' +
+	  '• 1er virement/chèque pour le **Club** (Cotisation 22 €) avec objet : <em>"Adhésion Club - Nom Prénom"</em><br>' +
+	  '• 2nd virement/chèque pour la **FFRP** (Licence) avec objet : <em>"Licence FFRP - Nom Prénom"</em>';
   updateCotisationMessage();
 }
 
@@ -259,7 +258,7 @@ function updateCotisationMessage() {
       if (santeStatut.value === "Nouveau ou Reprise") {
         docs.push("le <strong>Certificat Médical (CACI)</strong>");
       }
-      let reglement = isFfrpAdhesion ? "cotisation de 28 € + licence FFRP" : "cotisation de 28 €";
+      let reglement = isFfrpAdhesion ? "cotisation de 22 € + licence FFRP" : "cotisation de 22 €";
       if (docs.length > 0) {
         cotisationMessage.innerHTML = "A fournir : " + docs.join(", ") + ". Règlement (" + reglement + ") par <strong>virement bancaire</strong> ou par <strong>chèque(s)</strong> sous enveloppe.";
       } else {
@@ -267,14 +266,14 @@ function updateCotisationMessage() {
       }
     }
   } else {
-    let reglement = isFfrpAdhesion ? "cotisation de 28 € + licence FFRP" : "cotisation de 28 €";
+    let reglement = isFfrpAdhesion ? "cotisation de 22 € + licence FFRP" : "cotisation de 22 €";
     cotisationMessage.innerHTML = "Règlement (" + reglement + ") par <strong>virement bancaire</strong> ou par <strong>chèque(s)</strong> sous enveloppe.";
   }
 
   if (isFfrpAdhesion) {
-    validationMessage.innerHTML = '<span style="font-style: italic">La soumission en ligne ne valide pas les adhésions au club et à la FFRP. Vous devez effectuer votre virement ou remettre votre enveloppe au club pour valider ces inscriptions.</span>';
+    validationMessage.innerHTML = '<span style="font-style: italic">La soumission en ligne ne valide pas les adhésions au club et à la FFRP. Vous devez effectuer vos 2 virements (ou remettre vos 2 chèques) au club pour valider votre inscription.</span>';
   } else {
-    validationMessage.innerHTML = '<span style="font-style: italic">La soumission en ligne ne valide pas l\'adhésion. Vous devez effectuer votre virement ou remettre votre enveloppe au club pour valider ces inscriptions.</span>';
+    validationMessage.innerHTML = '<span style="font-style: italic">La soumission en ligne ne valide pas l\'adhésion. Vous devez effectuer votre virement ou remettre votre enveloppe au club pour valider votre inscription.</span>';
   }
 }
 
