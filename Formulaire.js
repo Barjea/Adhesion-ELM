@@ -225,7 +225,6 @@ function updateFfrpMessage() {
   updateCotisationMessage();
 
 }
-
 function updateCotisationMessage() {
   const cotisationMessage = document.getElementById('instruction-cotisation');
   const validationMessage = document.getElementById('instruction-validation');
@@ -245,12 +244,21 @@ function updateCotisationMessage() {
   const optionIndex = selectedOption ? optionsFFRP.indexOf(selectedOption) : -1;
   const isFfrpAdhesion = optionIndex >= 0 && optionIndex < (nbOptions - 1);
 
+  // Extraction automatique du montant de la licence (ex: "33€" ou "46€") dans le libellé de l'option
+  let ffrpPriceText = "";
+  if (selectedOption) {
+    const priceMatch = selectedOption.match(/(\d+)\s*€/);
+    if (priceMatch) {
+      ffrpPriceText = `(${priceMatch[1]} €)`; // Résultat ex: "(33 €)"
+    }
+  }
+
   // Construction du texte de règlement selon l'option FFRP
   let reglementHtml = "";
   if (isFfrpAdhesion) {
     reglementHtml = 'Règlement : Veuillez faire **2 virements distincts** (ou **2 chèques séparés**) :<br>' +
       '• 1er virement/chèque pour le **Club** (Cotisation 22 €) avec objet : <em>"Adhésion Club - Nom Prénom"</em><br>' +
-      '• 2nd virement/chèque pour la **FFRP** (Licence) avec objet : <em>"Licence FFRP - Nom Prénom"</em>';
+      `• 2nd virement/chèque pour la **FFRP** ${ffrpPriceText} avec objet : <em>"Licence FFRP - Nom Prénom"</em>`;
   } else {
     reglementHtml = 'Règlement : Veuillez effectuer votre règlement (cotisation de 22 €) par **virement bancaire** ou par **chèque** avec objet : <em>"Adhésion Club - Nom Prénom"</em>';
   }
