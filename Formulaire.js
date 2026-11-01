@@ -431,6 +431,18 @@ function initFormulaire() {
     document.getElementById('multi-code').value = memberData.codePostal || '';
     document.getElementById('multi-email').value = memberData.email || '';
     document.getElementById('multi-phone').value = memberData.telephone || '';
+    
+    // Pré-remplissage des champs de la personne à prévenir en cas d'urgence
+    const urgenceNomField = document.getElementById('multi-urgence-nom'); // Vérifie l'ID exact de ton input nom d'urgence dans index.html
+    const urgencePrenomField = document.getElementById('multi-urgence-prenom'); // Vérifie l'ID exact de ton input prénom d'urgence
+    const urgencePhoneField = document.getElementById('multi-urgence-phone'); // Vérifie l'ID exact de ton input téléphone d'urgence
+    if (urgenceNomField) urgenceNomField.value = memberData.urgenceNom || '';
+    if (urgencePrenomField) urgencePrenomField.value = memberData.urgencePrenom || '';
+    if (urgencePhoneField) urgencePhoneField.value = memberData.urgenceTelephone || '';
+    // Pré-remplissage de la case "Droit à l'image"
+    const droitImageCheckbox = document.getElementById('multi-droit-image');
+    if (droitImageCheckbox) {
+      droitImageCheckbox.checked = (memberData.droitImage === 'Oui');
     // Succès
     afficherMessageInfo('Vos données de l\'année dernière sont pré-remplies. Vous pouvez modifier votre adresse, ville, code postal, email et téléphone si nécessaire.', 'info', 'section-1-personnelles');
   
