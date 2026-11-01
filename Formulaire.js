@@ -223,7 +223,6 @@ function updateFfrpMessage() {
   messageContainer.innerHTML = '';
 
   updateCotisationMessage();
-
 }
 function updateCotisationMessage() {
   const cotisationMessage = document.getElementById('instruction-cotisation');
@@ -244,16 +243,16 @@ function updateCotisationMessage() {
   const optionIndex = selectedOption ? optionsFFRP.indexOf(selectedOption) : -1;
   const isFfrpAdhesion = optionIndex >= 0 && optionIndex < (nbOptions - 1);
 
-  // Extraction automatique du montant de la licence (ex: "33€" ou "46€") dans le libellé de l'option
+  // Extraction automatique du montant de la licence (ex: "33€" ou "46€")
   let ffrpPriceText = "";
   if (selectedOption) {
     const priceMatch = selectedOption.match(/(\d+)\s*€/);
     if (priceMatch) {
-      ffrpPriceText = `(${priceMatch[1]} €)`; // Résultat ex: "(33 €)"
+      ffrpPriceText = `(${priceMatch[1]} €)`;
     }
   }
 
-  // Construction du texte de règlement selon l'option FFRP
+  // 1. Construction de la base du texte de règlement (toujours affiché)
   let reglementHtml = "";
   if (isFfrpAdhesion) {
     reglementHtml = 'Règlement : Veuillez faire **2 virements distincts** (ou **2 chèques séparés**) :<br>' +
@@ -263,32 +262,25 @@ function updateCotisationMessage() {
     reglementHtml = 'Règlement : Veuillez effectuer votre règlement (cotisation de 22 €) par **virement bancaire** ou par **chèque** avec objet : <em>"Adhésion Club - Nom Prénom"</em>';
   }
 
-  // Gestion de l'affichage avec les pièces justificatives éventuelles (ex: Certificat Médical)
+  // 2. Gestion optionnelle des pièces à fournir (ex: Certificat Médical) en amont
+  let prefixDocs = "";
   if (sportSelected) {
     const santeStatut = document.querySelector('input[name="multi-sante-statut"]:checked');
-    if (santeStatut) {
-      let docs = [];
-      if (santeStatut.value === "Nouveau ou Reprise") {
-        docs.push("le <strong>Certificat Médical (CACI)</strong>");
-      }
-      if (docs.length > 0) {
-        cotisationMessage.innerHTML = "A fournir : " + docs.join(", ") + ".<br>" + reglementHtml;
-      } else {
-        cotisationMessage.innerHTML = reglementHtml;
-      }
+    if (santeStatut && santeStatut.value === "Nouveau ou Reprise") {
+      prefixDocs = "A fournir : le <strong>Certificat Médical (CACI)</strong>.<br>";
     }
-  } else {
-    cotisationMessage.innerHTML = reglementHtml;
   }
 
-  // Message de bas de page (validation)
+  // On injecte l'ensemble proprement
+  cotisationMessage.innerHTML = prefixDocs + reglementHtml;
+
+  // 3. Message de bas de page (validation)
   if (isFfrpAdhesion) {
     validationMessage.innerHTML = '<span style="font-style: italic">La soumission en ligne ne valide pas les adhésions au club et à la FFRP. Vous devez effectuer vos 2 virements (ou remettre vos 2 chèques) au club pour valider votre inscription.</span>';
   } else {
     validationMessage.innerHTML = '<span style="font-style: italic">La soumission en ligne ne valide pas l\'adhésion. Vous devez effectuer votre virement ou remettre votre enveloppe au club pour valider votre inscription.</span>';
   }
 }
-
 
 function updateDateTimeAdhesion() {
   const now = new Date();
