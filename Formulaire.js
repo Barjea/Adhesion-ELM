@@ -229,7 +229,9 @@ function updateFfrpMessage() {
 	messageContainer.innerHTML = 'Règlement : Veuillez faire **2 virements distincts** (ou **2 chèques séparés**) :<br>' +
 	  '• 1er virement/chèque pour le **Club** (Cotisation 22 €) avec objet : <em>"Adhésion Club - Nom Prénom"</em><br>' +
 	  '• 2nd virement/chèque pour la **FFRP** (Licence) avec objet : <em>"Licence FFRP - Nom Prénom"</em>';
+  }
   updateCotisationMessage();
+
 }
 
 function updateCotisationMessage() {
