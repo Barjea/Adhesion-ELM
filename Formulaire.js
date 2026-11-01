@@ -438,7 +438,7 @@ function initFormulaire() {
     const urgencePhoneField = document.getElementById('multi-urgence-phone'); // Vérifie l'ID exact de ton input téléphone d'urgence
     if (urgenceNomField) urgenceNomField.value = memberData.urgenceNom || '';
     if (urgencePrenomField) urgencePrenomField.value = memberData.urgencePrenom || '';
-    if (urgencePhoneField) urgencePhoneField.value = memberData.urgenceTelephone || '';
+    if (urgencePhoneField) urgencePhoneField.value = memberData.urgencePhone || '';
     // Pré-remplissage de la case "Droit à l'image"
     const droitImageCheckbox = document.getElementById('multi-droit-image');
     if (droitImageCheckbox) {
