@@ -443,6 +443,7 @@ function initFormulaire() {
     const droitImageCheckbox = document.getElementById('multi-droit-image');
     if (droitImageCheckbox) {
       droitImageCheckbox.checked = (memberData.droitImage === 'Oui');
+      }
     // Succès
     afficherMessageInfo('Vos données de l\'année dernière sont pré-remplies. Vous pouvez modifier votre adresse, ville, code postal, email et téléphone si nécessaire.', 'info', 'section-1-personnelles');
   
