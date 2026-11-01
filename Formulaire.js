@@ -238,15 +238,13 @@ function updateCotisationMessage() {
       break;
     }
   }
-
+  // Vérification explicite du choix FFRP et de l'option valide
   const ffrpSelect = document.getElementById('multi-ffrp-option');
   const selectedOption = ffrpSelect ? ffrpSelect.value : '';
-  const optionIndex = selectedOption ? optionsFFRP.indexOf(selectedOption) : -1;
-  
-  // Vérification explicite du choix FFRP et de l'option valide
+
   const choixFfrpRadio = document.querySelector('input[name="choix-ffrp"]:checked');
   const veutFfrp = choixFfrpRadio && choixFfrpRadio.value === 'Oui';
-  const isFfrpAdhesion = veutFfrp && optionIndex >= 0 && optionIndex < (nbOptions - 1);
+  const isFfrpAdhesion = veutFfrp && selectedOption !== '';
 
   // Extraction automatique du montant de la licence (ex: "33€" ou "46€")
   let ffrpPriceText = "";
