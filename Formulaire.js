@@ -332,6 +332,31 @@ function showSection(sectionId) {
   }
 }
 
+function initSanteFfrpToggle() {
+  const radios = document.querySelectorAll('input[name="multi-sante-statut"]');
+  const blocRenouv = document.getElementById('bloc-sante-renouvellement');
+  const blocCaci = document.getElementById('bloc-sante-caci');
+
+  if (!radios.length) return;
+
+  radios.forEach(radio => {
+    radio.addEventListener('change', function() {
+      if (this.value === "Renouvellement") {
+        if (blocRenouv) blocRenouv.style.display = 'block';
+        if (blocCaci) blocCaci.style.display = 'none';
+      } else if (this.value === "Nouveau ou Reprise") {
+        if (blocRenouv) blocRenouv.style.display = 'none';
+        if (blocCaci) blocCaci.style.display = 'block';
+      }
+      
+      // Met à jour l'état de validation du bouton "Suivant" de la section
+      if (sectionValidators['section-4-sante-ffrp']) {
+        sectionValidators['section-4-sante-ffrp']();
+      }
+    });
+  });
+}
+
 function initFormNavigation() {
   setupSectionValidation('section-1-personnelles', 'next-button-section-1');
   setupSectionValidation('section-2-activites', 'next-button-activities');
@@ -339,6 +364,8 @@ function initFormNavigation() {
   setupSectionValidation('section-4-sante-ffrp', 'next-button-sante-ffrp');
   setupSectionValidation('section-4-sante-club', 'next-button-sante-club');
   setupSectionValidation('section-5-fede', 'next-button-fede');        
+  
+  initSanteFfrpToggle();
   
   showSection('section-1-personnelles');
   renderFfrpDropdown();
