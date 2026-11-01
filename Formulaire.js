@@ -224,6 +224,7 @@ function updateFfrpMessage() {
 
   updateCotisationMessage();
 }
+
 function updateCotisationMessage() {
   const cotisationMessage = document.getElementById('instruction-cotisation');
   const validationMessage = document.getElementById('instruction-validation');
@@ -241,7 +242,11 @@ function updateCotisationMessage() {
   const ffrpSelect = document.getElementById('multi-ffrp-option');
   const selectedOption = ffrpSelect ? ffrpSelect.value : '';
   const optionIndex = selectedOption ? optionsFFRP.indexOf(selectedOption) : -1;
-  const isFfrpAdhesion = optionIndex >= 0 && optionIndex < (nbOptions - 1);
+  
+  // Vérification explicite du choix FFRP et de l'option valide
+  const choixFfrpRadio = document.querySelector('input[name="choix-ffrp"]:checked');
+  const veutFfrp = choixFfrpRadio && choixFfrpRadio.value === 'Oui';
+  const isFfrpAdhesion = veutFfrp && optionIndex >= 0 && optionIndex < (nbOptions - 1);
 
   // Extraction automatique du montant de la licence (ex: "33€" ou "46€")
   let ffrpPriceText = "";
@@ -252,26 +257,29 @@ function updateCotisationMessage() {
     }
   }
 
-  // 1. Construction de la base du texte de règlement (toujours affiché)
+  // 1. Construction du texte de règlement avec des balises HTML <strong> (et non du Markdown **)
   let reglementHtml = "";
   if (isFfrpAdhesion) {
-    reglementHtml = 'Règlement : Veuillez faire **2 virements distincts** (ou **2 chèques séparés**) :<br>' +
-      '• 1er virement/chèque pour le **Club** (Cotisation 22 €) avec objet : <em>"Adhésion Club - Nom Prénom"</em><br>' +
-      `• 2nd virement/chèque pour la **FFRP** ${ffrpPriceText} avec objet : <em>"Licence FFRP - Nom Prénom"</em>`;
+    reglementHtml = 'Règlement : Veuillez faire <strong>2 virements distincts</strong> (ou <strong>2 chèques séparés</strong>) :<br>' +
+      '• 1er virement/chèque pour le <strong>Club</strong> (Cotisation 22 €) avec objet : <em>"Adhésion Club - Nom Prénom"</em><br>' +
+      `• 2nd virement/chèque pour la <strong>FFRP</strong> ${ffrpPriceText} avec objet : <em>"Licence FFRP - Nom Prénom"</em>`;
   } else {
-    reglementHtml = 'Règlement : Veuillez effectuer votre règlement (cotisation de 22 €) par **virement bancaire** ou par **chèque** avec objet : <em>"Adhésion Club - Nom Prénom"</em>';
+    reglementHtml = 'Règlement : Veuillez effectuer votre règlement (cotisation de 22 €) par <strong>virement bancaire</strong> ou par <strong>chèque</strong> avec objet : <em>"Adhésion Club - Nom Prénom"</em>';
   }
 
-  // 2. Gestion optionnelle des pièces à fournir (ex: Certificat Médical) en amont
+  // 2. Gestion des pièces justificatives (Certificat Médical) pour le Club ou la FFRP
   let prefixDocs = "";
   if (sportSelected) {
-    const santeStatut = document.querySelector('input[name="multi-sante-statut"]:checked');
-    if (santeStatut && santeStatut.value === "Nouveau ou Reprise") {
+    const santeStatutFfrp = document.querySelector('input[name="multi-sante-statut"]:checked');
+    const santeReponseClub = document.querySelector('input[name="multi-sante-reponse"]:checked');
+
+    if ((santeStatutFfrp && santeStatutFfrp.value === "Nouveau ou Reprise") ||
+        (santeReponseClub && santeReponseClub.value === "Besoin certificat médical")) {
       prefixDocs = "A fournir : le <strong>Certificat Médical (CACI)</strong>.<br>";
     }
   }
 
-  // On injecte l'ensemble proprement
+  // Injection garantie dans le paragraphe
   cotisationMessage.innerHTML = prefixDocs + reglementHtml;
 
   // 3. Message de bas de page (validation)
