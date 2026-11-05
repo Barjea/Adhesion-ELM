@@ -306,8 +306,7 @@ function showSection(sectionId) {
   document.getElementById('section-1-personnelles').style.display = 'none';
   document.getElementById('section-2-activites').style.display = 'none';
   document.getElementById('section-3-ffrp').style.display = 'none';
-  document.getElementById('section-4-sante-ffrp').style.display = 'none';
-  document.getElementById('section-4-sante-club').style.display = 'none';
+  document.getElementById('section-4-sante').style.display = 'none';
   document.getElementById('section-5-fede').style.display = 'none';
   document.getElementById('section-6-SES').style.display = 'none';
 
@@ -348,8 +347,8 @@ function initSanteFfrpToggle() {
       }
       
       // Met à jour l'état de validation du bouton "Suivant" de la section
-      if (sectionValidators['section-4-sante-ffrp']) {
-        sectionValidators['section-4-sante-ffrp']();
+      if (sectionValidators['section-4-sante']) {
+        sectionValidators['section-4-sante']();
       }
     });
   });
@@ -359,14 +358,14 @@ function initFormNavigation() {
   setupSectionValidation('section-1-personnelles', 'next-button-section-1');
   setupSectionValidation('section-2-activites', 'next-button-activities');
   setupSectionValidation('section-3-ffrp', 'next-button-ffrp');
-  setupSectionValidation('section-4-sante-ffrp', 'next-button-sante-ffrp');
-  setupSectionValidation('section-4-sante-club', 'next-button-sante-club');
+  setupSectionValidation('section-4-sante', 'next-button-sante');
   setupSectionValidation('section-5-fede', 'next-button-fede');        
   
   initSanteFfrpToggle();
   
   showSection('section-1-personnelles');
   renderFfrpDropdown();
+  // 1. Infos Perso -> Activités
 
   const nextButtonSection1 = document.getElementById('next-button-section-1');
   if (nextButtonSection1) {
@@ -374,12 +373,12 @@ function initFormNavigation() {
       showSection('section-2-activites');
     });
   }
-
+ // 2. Activités -> FFRP (si rando), Santé (si autre sport), ou Signature/Loisirs (si loisirs uniquement)
   const nextButtonActivities = document.getElementById('next-button-activities');
   if (nextButtonActivities) {
     nextButtonActivities.addEventListener('click', function() {
-      const mevoRandoCheckbox = document.getElementById('multi-activite-sportive-1'); 
-      const randoSelected = mevoRandoCheckbox && mevoRandoCheckbox.checked;
+    	const mevoRandoCheckbox = document.getElementById('multi-activite-sportive-1'); 
+      	const randoSelected = mevoRandoCheckbox && mevoRandoCheckbox.checked;
 
       let autreSportSelected = false;
       for (let i = 1; i <= nbActiviteS; i++) {
@@ -391,48 +390,46 @@ function initFormNavigation() {
       }                        
 
       if (randoSelected) {
-        showSection('section-3-ffrp');
+        showSection('section-3-ffrp'); // Vers FFRP
       } else if (autreSportSelected) {
-        showSection('section-4-sante-club');
+        showSection('section-4-sante'); // Vers Santé (si autre sport sans rando)
       } else {
-        showSection('section-6-SES');
+        showSection('section-6-SES'); // Vers Signature (si loisirs uniquement)
       }
     });
   }
-
+// 3. FFRP -> Options/Assurance (si OUI) ou Santé (si NON)
   const nextButtonFFRP = document.getElementById('next-button-ffrp');
   if (nextButtonFFRP) {
     nextButtonFFRP.addEventListener('click', function() {
       const choixFFRP = document.querySelector('input[name="choix-ffrp"]:checked');
-      if (choixFFRP && choixFFRP.value === 'Oui') {
-        showSection('section-4-sante-ffrp');
+      const veutFfrp = choixFFRP && choixFFRP.value === 'Oui';
+
+      if (veutFfrp) {
+        showSection('section-5-fede'); // Vers Options FFRP
       } else {
-        showSection('section-4-sante-club');
+        showSection('section-4-sante'); // Directement vers Santé
       }
     });
   }
 
-  const nextButtonSanteFFRP = document.getElementById('next-button-sante-ffrp');
-  if (nextButtonSanteFFRP) {
-    nextButtonSanteFFRP.addEventListener('click', function() {
-      showSection('section-5-fede');
-    });
-  } 
-
-  const nextButtonSanteClub = document.getElementById('next-button-sante-club');
-  if (nextButtonSanteClub) {
-    nextButtonSanteClub.addEventListener('click', function() {
-      showSection('section-6-SES');
-    });
-  }
-
+  // 5. Options/Assurance -> Santé
   const nextButtonSection5 = document.getElementById('next-button-fede');
   if (nextButtonSection5) {
     nextButtonSection5.addEventListener('click', function() {
-      showSection('section-6-SES');
+      showSection('section-4-sante'); // Passage par la santé après l'assurance
+    });
+  }
+
+  // 4. Santé -> Signature finale
+  const nextButtonSante = document.getElementById('next-button-sante');
+  if (nextButtonSante) {
+    nextButtonSante.addEventListener('click', function() {
+      showSection('section-6-SES'); // Fin du parcours vers la signature
     });
   }
 }
+  
 
 // ===========================================================================
 // 4. INITIALISATION PRINCIPALE DU FORMULAIRE
