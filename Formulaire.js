@@ -476,18 +476,21 @@ function initFormulaire() {
   renderActivityCheckboxes();
   initFormNavigation();
 
-  function onSuccess(response) {
+function onSuccess(response) {
     if (response.success) {
       const mainContainer = document.getElementById('main-container');
       mainContainer.innerHTML = `
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center; padding: 40px;">
           <div style="font-size: 4em; color: #28a745; margin-bottom: 20px;">✓</div>
           <h2 style="color: #28a745; font-size: 1.8em; margin-bottom: 15px;">Adhésion enregistrée avec succès !</h2>
-          <p style="font-size: 1.1em; color: #666; margin-bottom: 5px;">${response.message || "Votre demande d'adhésion a été enregistrée."}</p>
-          <p style="font-size: 1.1em; color: #666; margin-bottom: 10px;">${response.dateTime || ""}</p>
+          <p id="success-msg" style="font-size: 1.1em; color: #666; margin-bottom: 5px;"></p>
+          <p id="success-time" style="font-size: 1.1em; color: #666; margin-bottom: 10px;"></p>
           <p style="font-size: 0.95em; color: #888; font-style: italic;">Pour valider votre inscription, n'oubliez pas d'effectuer votre virement ou de remettre votre enveloppe au club.</p>
         </div>
       `;
+      // 🛡️ Utilisation sécurisée de textContent
+      document.getElementById('success-msg').textContent = response.message || "Votre demande d'adhésion a bien été enregistrée.";
+      document.getElementById('success-time').textContent = response.dateTime || "";
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       onError({ message: response.message });
@@ -514,6 +517,11 @@ function initFormulaire() {
 
       const data = {};
       new FormData(form).forEach((value, key) => (data[key] = value));
+      
+      // 🛡️ Ajout du token s'il est présent pour sécuriser l'écriture
+      if (token) {
+        data.token = token;
+      }
 
       fetch(GAS_EXEC_URL, {
         method: "POST",
