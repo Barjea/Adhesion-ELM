@@ -11,6 +11,7 @@ let nomActivitesLoisirs = [];
 let nbOptions = 0;
 let optionsFFRP = [];
 let memberData = null; 
+let cotisationClub = null;
 
 const urlParams = new URLSearchParams(window.location.search);
 const token = urlParams.get("token");
@@ -36,6 +37,7 @@ async function chargerDonneesEtInitialiser() {
       nomActivitesLoisirs = json.config.nomActivitesLoisirs;
       nbOptions = json.config.nbOptions;
       optionsFFRP = json.config.optionsFFRP;
+      cotisationClub = json.config.cotisationClub;
     } catch (err) {
       console.error("Erreur de chargement des données :", err);
     }
@@ -254,15 +256,18 @@ function updateCotisationMessage() {
       ffrpPriceText = `(${priceMatch[1]} €)`;
     }
   }
+  const cotisationTxt = (cotisationClub !== null)
+  ? Number(cotisationClub).toLocaleString('fr-FR') + ' €'
+  : '';
 
   // 1. Construction du texte de règlement avec des balises HTML <strong> (et non du Markdown **)
   let reglementHtml = "";
   if (isFfrpAdhesion) {
     reglementHtml = 'Règlement : Veuillez faire <strong>2 virements distincts</strong> (ou <strong>2 chèques séparés</strong>) :<br>' +
-      '• 1er virement/chèque pour le <strong>Club</strong> (Cotisation 22 €) avec objet : <em>"Adhésion Club - Nom Prénom"</em><br>' +
+      '• 1er virement/chèque pour le <strong>Club</strong> (Cotisation ' + cotisationTxt + ') avec objet : <em>"Adhésion Club - Nom Prénom"</em><br>' +
       `• 2nd virement/chèque pour la <strong>FFRP</strong> ${ffrpPriceText} avec objet : <em>"Licence FFRP - Nom Prénom"</em>`;
   } else {
-    reglementHtml = 'Règlement : Veuillez effectuer votre règlement (cotisation de 22 €) par <strong>virement bancaire</strong> ou par <strong>chèque</strong> avec objet : <em>"Adhésion Club - Nom Prénom"</em>';
+    reglementHtml = 'Règlement : Veuillez effectuer votre règlement (cotisation de ' + cotisationTxt + ') par <strong>virement bancaire</strong> ou par <strong>chèque</strong> avec objet : <em>"Adhésion Club - Nom Prénom"</em>';
   }
 
   // 2. Gestion des pièces justificatives (Certificat Médical) pour le Club ou la FFRP
@@ -469,9 +474,16 @@ function initFormulaire() {
     // Succès
     afficherMessageInfo('Vos données de l\'année dernière sont pré-remplies. Vous pouvez modifier votre adresse, ville, code postal, email et téléphone si nécessaire.', 'info', 'section-1-personnelles');
   
-  } else if(token) {
-    afficherMessageInfo('Aucune donnée trouvée pour l\'année dernière.', 'warning', 'section-1-personnelles');
-    }
+  } else {
+    // Formulaire réservé aux anciens adhérents : pas de lien valide, pas de formulaire
+    document.getElementById('main-container').innerHTML = `
+      <div style="text-align:center; padding:40px;">
+        <h2>Accès réservé aux adhérents de l'an dernier</h2>
+        <p>Veuillez utiliser le lien personnel reçu par e-mail. Il est possible qu'il ne soit plus valide.</p>
+        <p>Pour une première adhésion, utilisez le bulletin papier ou contactez le club.</p>
+      </div>`;
+    return;
+  }
 
   renderActivityCheckboxes();
   initFormNavigation();
